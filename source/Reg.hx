@@ -1,6 +1,7 @@
 package;
 import flash.display.BitmapData;
 import flash.geom.Rectangle;
+import flixel.util.FlxSave;
 
 class Reg
 {
@@ -9,6 +10,8 @@ class Reg
 	static public var highScore:Int = 0;
 	
 	static public var PS:PlayState;
+	
+	static public var save:FlxSave;
 	
 	/**
 	 * Draws the bounce panels. Useful for mobile devices with wierd resolutions.

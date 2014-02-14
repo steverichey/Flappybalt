@@ -64,12 +64,12 @@ class PlayState extends FlxState
 			highScore.text = Std.string( Reg.highScore );
 		
 		bounceLeft = new FlxSprite( 1, 17 );
-		bounceLeft.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, false, 4, 206 );
+		bounceLeft.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, false, 4, FlxG.height - 34 );
 		bounceLeft.animation.add( "flash", [1,0], 8, false);
 		add( bounceLeft );
 		
 		bounceRight = new FlxSprite( FlxG.width - 5, 17 );
-		bounceRight.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, false, 4, 206 );
+		bounceRight.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, false, 4, FlxG.height - 34 );
 		bounceRight.animation.add( "flash", [1,0], 8, false );
 		add( bounceRight );
 		
@@ -157,13 +157,15 @@ class PlayState extends FlxState
 	 */
 	static public function saveScore():Void
 	{
-		var save:FlxSave = new FlxSave();
+		Reg.save = new FlxSave();
 		
-		if(save.bind(SAVE_DATA))
+		if( Reg.save.bind( SAVE_DATA ) )
 		{
-			if((save.data.score == null) || (save.data.score < Reg.score))
-				save.data.score = Reg.score;
+			if( ( Reg.save.data.score == null ) || ( Reg.save.data.score < Reg.score ) )
+				Reg.save.data.score = Reg.score;
 		}
+		
+		Reg.save.flush();
 	}
 	
 	/**
@@ -173,12 +175,12 @@ class PlayState extends FlxState
 	 */
 	static public function loadScore():Int
 	{
-		var save:FlxSave = new FlxSave();
+		Reg.save = new FlxSave();
 		
-		if( save.bind( SAVE_DATA ) )
+		if( Reg.save.bind( SAVE_DATA ) )
 		{
-			if( ( save.data != null ) && ( save.data.score != null ) )
-				return save.data.score;
+			if( ( Reg.save.data != null ) && ( Reg.save.data.score != null ) )
+				return Reg.save.data.score;
 		}
 		
 		return 0;

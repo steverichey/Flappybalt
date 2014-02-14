@@ -10,7 +10,6 @@ All of the code in this repository is available under an MIT license. Code not i
 
 ### Changes:
 * Pixel-perfect collisions.
-* Buy me a coffee.
 * Special FX
 
 Canabalt-themed flappy-like for [FlappyJam](http://itch.io/jam/flappyjam).

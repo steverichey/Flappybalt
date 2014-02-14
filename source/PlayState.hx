@@ -1,5 +1,6 @@
 package;
 
+import flixel.effects.particles.FlxEmitter;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
@@ -26,6 +27,7 @@ class PlayState extends FlxState
 	public var scoreDisplay:FlxText;
 	
 	public var spikes:FlxGroup;
+	public var feathers:FlxEmitter;
 	
 	override public function create():Void
 	{
@@ -33,6 +35,10 @@ class PlayState extends FlxState
 		
 		Reg.score = 0;
 		Reg.PS = this;
+		
+		#if !FLX_NO_MOUSE
+		FlxG.mouse.visible = false;
+		#end
 		
 		add( new FlxSprite( 0, 0, "assets/bg.png" ) );
 		
@@ -85,6 +91,13 @@ class PlayState extends FlxState
 		spikes.add( paddleRight );
 		spikes.add( spikeTop );
 		spikes.add( spikeBottom );
+		
+		feathers = new FlxEmitter();
+		feathers.makeParticles( "assets/feather.png", 50, 32 );
+		feathers.setXSpeed( -5, 5 );
+		feathers.setYSpeed( -5, 50 );
+		//feathers.setAlpha( 1, 1, 0, 0 );
+		add( feathers );
 	}
 	
 	override public function update():Void

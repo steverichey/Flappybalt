@@ -16,7 +16,11 @@ class Player extends FlxSprite
 	
 	override public function update()
 	{
+		#if !FLX_NO_KEYBOARD
 		if ( FlxG.keys.justPressed.SPACE ) {
+		#elseif !FLX_NO_TOUCH
+		if ( FlxG.touches.getFirst != null ) {
+		#end
 			if ( acceleration.y == 0 ) {
 				acceleration.y = 500;
 				velocity.x = 80;
@@ -34,6 +38,10 @@ class Player extends FlxSprite
 	{
 		if(!exists)
 			return;
+		
+		Reg.PS.feathers.x = x;
+		Reg.PS.feathers.y = y;
+		Reg.PS.feathers.start( true, 2, 0, 10, 1 );
 		
 		super.kill();
 		

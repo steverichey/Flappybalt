@@ -37,6 +37,10 @@
 	<haxelib name="openfl" />
 	<haxelib name="flixel"/>
 	
+	<!---------------------------------ICONS---------------------------------------->
+	
+	<icon path="assets/icon.png"/>
+	
 	<!---------------------------------HAXEDEFINES---------------------------------->
 	
 	<!--Enable the flixel core recording system-->

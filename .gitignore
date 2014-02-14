@@ -6,3 +6,5 @@ export/
 
 # Other files and folders
 .settings/
+Project-Private.xml
+*.keystore

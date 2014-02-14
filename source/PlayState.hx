@@ -8,6 +8,7 @@ import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
 import flixel.util.FlxSave;
+import flixel.util.FlxSpriteUtil;
 
 class PlayState extends FlxState
 {
@@ -28,6 +29,7 @@ class PlayState extends FlxState
 	
 	public var spikes:FlxGroup;
 	public var feathers:FlxEmitter;
+	public var highScore:FlxText;
 	
 	override public function create():Void
 	{
@@ -36,6 +38,8 @@ class PlayState extends FlxState
 		Reg.score = 0;
 		Reg.PS = this;
 		
+		FlxG.camera.bgColor = 0xff646A7D;
+		
 		#if !FLX_NO_MOUSE
 		FlxG.mouse.visible = false;
 		#end
@@ -43,27 +47,29 @@ class PlayState extends FlxState
 		add( new FlxSprite( 0, 0, "assets/bg.png" ) );
 		
 		// Current score
-		scoreDisplay = new FlxText( 75, 141, 90 );
+		scoreDisplay = new FlxText( 0, 160, FlxG.width );
+		scoreDisplay.alignment = "center";
 		scoreDisplay.color = 0xff4d4d59;
 		scoreDisplay.size = 24;
 		add( scoreDisplay );
 		
 		// All-time high score
-		var oldHighScore:Int = loadScore();
+		Reg.highScore = loadScore();
 		
-		if ( oldHighScore > 0 ) {
-			var highScore:FlxText = new FlxText( FlxG.width * 0.5 - 20, 16, 40, oldHighScore );
-			highScore.alignment = "center";
-			add( highScore );
-		}
-
+		highScore = new FlxText( 0, 40, FlxG.width, "" );
+		highScore.alignment = "center";
+		add( highScore );
+		
+		if ( Reg.highScore > 0 )
+			highScore.text = Std.string( Reg.highScore );
+		
 		bounceLeft = new FlxSprite( 1, 17 );
-		bounceLeft.loadGraphic( "assets/bounce.png", true, false, 4, 206 );
+		bounceLeft.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, false, 4, 206 );
 		bounceLeft.animation.add( "flash", [1,0], 8, false);
 		add( bounceLeft );
 		
 		bounceRight = new FlxSprite( FlxG.width - 5, 17 );
-		bounceRight.loadGraphic( "assets/bounce.png", true, false, 4, 206 );
+		bounceRight.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, false, 4, 206 );
 		bounceRight.animation.add( "flash", [1,0], 8, false );
 		add( bounceRight );
 		
@@ -94,9 +100,9 @@ class PlayState extends FlxState
 		
 		feathers = new FlxEmitter();
 		feathers.makeParticles( "assets/feather.png", 50, 32 );
-		feathers.setXSpeed( -5, 5 );
-		feathers.setYSpeed( -5, 50 );
-		//feathers.setAlpha( 1, 1, 0, 0 );
+		feathers.setXSpeed( -10, 10 );
+		feathers.setYSpeed( -10, 10 );
+		feathers.gravity = 10;
 		add( feathers );
 	}
 	
@@ -140,6 +146,10 @@ class PlayState extends FlxState
 		paddleRight.y = FlxG.height;
 		Reg.score = 0;
 		scoreDisplay.text = "";
+		Reg.highScore = loadScore();
+		
+		if ( Reg.highScore > 0 )
+			highScore.text = Std.string( Reg.highScore );
 	}
 	
 	/**
@@ -158,6 +168,7 @@ class PlayState extends FlxState
 	
 	/**
 	 * Load data from the saved session (mostly used elsewhere).
+	 * 
 	 * @return	The total points.
 	 */
 	static public function loadScore():Int

@@ -19,7 +19,7 @@ class Player extends FlxSprite
 		#if !FLX_NO_KEYBOARD
 		if ( FlxG.keys.justPressed.SPACE ) {
 		#elseif !FLX_NO_TOUCH
-		if ( FlxG.touches.getFirst != null ) {
+		if ( FlxG.touches.justStarted().length > 0 ) {
 		#end
 			if ( acceleration.y == 0 ) {
 				acceleration.y = 500;

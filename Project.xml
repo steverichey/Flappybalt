@@ -39,11 +39,7 @@
 	
 	<!---------------------------------ICONS---------------------------------------->
 	
-	<icon path="assets/icon_16.png" size="16" />
-	<icon path="assets/icon_32.png" size="32" />
-	<icon path="assets/icon_64.png" size="64" />
-	<icon path="assets/icon_128.png" size="128" />
-	<icon path="assets/icon_256.png" size="256" />
+	<icon path="assets/icon.svg"/>
 	
 	<!---------------------------------HAXEDEFINES---------------------------------->
 	

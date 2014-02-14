@@ -8,3 +8,5 @@ export/
 .settings/
 Project-Private.xml
 *.keystore
+*.licensekey
+libs/

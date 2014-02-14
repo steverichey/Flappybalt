@@ -5,18 +5,45 @@ import flixel.util.FlxSave;
 
 class Reg
 {
+	/**
+	 * The current total score.
+	 */
 	static public var score:Int = 0;
 	
+	/**
+	 * High score storage.
+	 */
 	static public var highScore:Int = 0;
 	
+	/**
+	 * A reference to the active playstate. Lets you call Reg.PS globally to access the playstate.
+	 */
 	static public var PS:PlayState;
 	
+	/**
+	 * Used for saving and loading high scores.
+	 */
 	static public var save:FlxSave;
 	
 	/**
+	 * Just a 2px by 2px transparent piece of "dust".
+	 */
+	static public function dustMote():BitmapData
+	{
+		if ( dustMoteData == null ) {
+			dustMoteData = new BitmapData( 2, 2, true, 0x88FFFFFF );
+		}
+		
+		return dustMoteData;
+	}
+	
+	static private var dustMoteData:BitmapData;
+	
+	/**
 	 * Draws the bounce panels. Useful for mobile devices with wierd resolutions.
-	 * @param	Height
-	 * @return
+	 * 
+	 * @param	Height	The height of the panel to draw.
+	 * @return	A BitmapData object representing the paddle. Cached for the second paddle to save time.
 	 */
 	static public function getBounceImage( Height:Int ):BitmapData
 	{
@@ -46,6 +73,8 @@ class Reg
 		
 		return _bitmapData;
 	}
+	
+	// This is all stuff used for drawing the paddles.
 	
 	static private var _bitmapData:BitmapData;
 	static private var _rect:Rectangle;

@@ -39,9 +39,7 @@ class Player extends FlxSprite
 		if(!exists)
 			return;
 		
-		Reg.PS.feathers.x = x;
-		Reg.PS.feathers.y = y;
-		Reg.PS.feathers.start( true, 2, 0, 10, 1 );
+		Reg.PS.launchFeathers( x, y, 10 );
 		
 		super.kill();
 		

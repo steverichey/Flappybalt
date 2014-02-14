@@ -19,7 +19,7 @@ class Paddle extends FlxSprite
 	
 	public function randomize():Void
 	{
-		targetY = FlxRandom.intRanged( Std.int( Reg.PS.bounceLeft.y ), Std.int( Reg.PS.bounceLeft.y + Reg.PS.bounceLeft.height - height ) );
+		targetY = Reg.PS.randomPaddleY();
 		
 		if( targetY < y )
 			velocity.y = -SPEED;

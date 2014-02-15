@@ -41,6 +41,10 @@
 	
 	<icon path="assets/icon.svg"/>
 	
+	<!--------------------------------MISC------------------------------------------>
+	
+	<template path="libs/AndroidManifest.xml" rename="AndroidManifest.xml" if="android"/>
+	
 	<!---------------------------------HAXEDEFINES---------------------------------->
 	
 	<!--Enable the flixel core recording system-->

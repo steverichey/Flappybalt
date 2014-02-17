@@ -41,8 +41,10 @@
 	
 	<icon path="assets/icon.svg"/>
 	
-	<!--------------------------------MISC------------------------------------------>
+	<!---------------------------------OTHER---------------------------------------->
 	
+	<!-- This is required to create a non-debug APK, but you should NOT store the alias or password in a public repo! -->
+	<!--<certificate path="flappybalt.keystore" alias="YOUR_ALIAS" password="YOUR_PASSWORD" if="android" unless="debug"/>-->
 	<template path="libs/AndroidManifest.xml" rename="AndroidManifest.xml" if="android"/>
 	
 	<!---------------------------------HAXEDEFINES---------------------------------->

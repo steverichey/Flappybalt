@@ -4,7 +4,7 @@
 <img src="assets/screenshot.png" alt="Screenshot"/>
 </p>
 
-A cross-platform port of [AdamAtomic](https://github.com/AdamAtomic)'s [Flappybalt](http://adamatomic.com/flappybalt/), converted to [Haxe](http://www.haxe.org) and [HaxeFlixel](http://www.haxeflixel.com). You can play this on your Android by downloading it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.steverichey.flappybalt) if you'd like.
+A cross-platform port of [AdamAtomic](https://github.com/AdamAtomic)'s [Flappybalt](http://adamatomic.com/flappybalt/), converted to [Haxe](http://www.haxe.org) and [HaxeFlixel](http://www.haxeflixel.com). You can play this on your Android by downloading it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.steverichey.flappybalt) if you'd like. You can also download a number of versions from [the releases page](https://github.com/steverichey/Flappybalt/releases).
 
 # Releasing for Android with HaxeFlixel (Windows)
 
@@ -51,6 +51,10 @@ Now Lime will use this file instead of the default AndroidManifest it would norm
 ````
 
 **As far as I know** you can delete these lines without issue. If you do this, when someone goes to launch your app, it will say "This app requires no special permissions". Obviously, this is not applicable if you actually need one of these permissions!
+
+## Versioning
+
+If you use the `AndroidManifest` template above, make sure you update `versionCode` and `versionName` when you publish an update to Google Play. `versionCode` should always be incremented and has to be an integer, so each subsequent release would be 1, then 2, then 3, and so on. Users won't see this. `versionName` can be just about anything and is visible to the user, so something like `1.0` then `1.1` and so on. Google Play won't accept a new package with the same `versionCode` or `versionName`.
 
 All of the code in this repository is available under an MIT license. Code not included in this repository (mostly just app settings, private keys, etc) is copyright [SteveRichey](https://github.com/steverichey) but if you have questions about implementation let me know and I'll help you out!
 

@@ -26,20 +26,6 @@ class Reg
 	static public var save:FlxSave;
 	
 	/**
-	 * Just a 2px by 2px transparent piece of "dust".
-	 */
-	static public function dustMote():BitmapData
-	{
-		if ( dustMoteData == null ) {
-			dustMoteData = new BitmapData( 2, 2, true, 0x88FFFFFF );
-		}
-		
-		return dustMoteData;
-	}
-	
-	static private var dustMoteData:BitmapData;
-	
-	/**
 	 * Draws the bounce panels. Useful for mobile devices with wierd resolutions.
 	 * 
 	 * @param	Height	The height of the panel to draw.
@@ -48,7 +34,9 @@ class Reg
 	static public function getBounceImage( Height:Int ):BitmapData
 	{
 		if ( _bitmapData != null )
+		{
 			return _bitmapData;
+		}
 		
 		_bitmapData = new BitmapData( 8, Height, false, GREY_MED );
 		

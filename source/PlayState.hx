@@ -1,5 +1,6 @@
 package;
 
+import flash.Lib;
 import flixel.effects.particles.FlxEmitter;
 import flixel.FlxG;
 import flixel.FlxObject;
@@ -24,6 +25,10 @@ class PlayState extends FlxState
 	private var _scoreDisplay:FlxText;
 	private var _feathers:FlxEmitter;
 	private var _highScore:FlxText;
+	
+	#if !FLX_NO_MOUSE
+	private var _dragging:Bool = false;
+	#end
 	
 	inline static private var SAVE_DATA:String = "FLAPPYBALT";
 	
@@ -124,19 +129,13 @@ class PlayState extends FlxState
 		
 		// Spikes at the bottom of the screen
 		
-		//_spikeBottom = new FlxSprite( 0, 0, "assets/spike.png" );
-		//_spikeBottom.y = FlxG.height - _spikeBottom.height;
 		_spikeBottom = new Spike(false);
 		add( _spikeBottom );
 		
-		// Spikes at the top of the screen. Rotated to reduce number of assets.
+		// Spikes at the top of the screen.
 		
-		//_spikeTop = new FlxSprite( 0, 0 );
-		//_spikeTop.loadRotatedGraphic( "assets/spike.png", 4 );
-		//_spikeTop.angle = 180;
-		//_spikeTop.y = -72;
-		//add( _spikeTop );
-		
+		_spikeTop = new Spike(true);
+		add(_spikeTop);
 		
 		// The bird.
 		
@@ -184,9 +183,36 @@ class PlayState extends FlxState
 		}
 		#end
 		
+		// This is supposed to enable window movement for desktop releases, but it doesn't work ATM.
+		
+		#if !FLX_NO_MOUSE
+		if (FlxG.mouse.justPressed)
+		{
+			_dragging = true;
+		}
+		
+		if (FlxG.mouse.justReleased)
+		{
+			_dragging = false;
+		}
+		
+		//if (_dragging && Lib.current.stage.parent != null)
+		//{
+		//	Lib.current.stage.parent.x = FlxG.mouse.x - 10;
+		//	Lib.current.stage.parent.y = FlxG.mouse.y - 10;
+		//}
+		//if (_dragging)
+		//{
+		//	Lib.current.parent.x -= 1;
+		//}
+		#end
+		
 		super.update();
 	}
 	
+	/**
+	 * Launch a bunch of feathers at X and Y.
+	 */
 	public function launchFeathers( X:Float, Y:Float, Amount:Int ):Void
 	{
 		_feathers.x = X;
@@ -194,6 +220,9 @@ class PlayState extends FlxState
 		_feathers.start( true, 2, 0, Amount, 1 );
 	}
 	
+	/**
+	 * Returns a random valid position for the paddle to slide to.
+	 */
 	public function randomPaddleY():Int
 	{
 		return FlxRandom.intRanged( Std.int( _bounceLeft.y ), Std.int( _bounceLeft.y + _bounceLeft.height - _paddleLeft.height ) );

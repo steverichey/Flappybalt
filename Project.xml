@@ -2,7 +2,7 @@
 <project>
 	<!------------------------------APPLICATION SETTINGS---------------------------->
 	
-	<app title="Flappybalt" file="Flappybalt" main="Main" version="1.0.0" company="STVR" package="com.steverichey.flappybalt" />
+	<app title="Flappybalt" file="Flappybalt" main="Main" version="1.1" company="STVR" package="com.steverichey.flappybalt" />
     <meta package="com.steverichey.flappybalt"/>
 	
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file, or you can set the actual size of your file manually at "Flxpreloader-onUpdate-bytesTotal"!-->
@@ -20,7 +20,7 @@
 	<window if="web"		orientation="portrait"  />
 	
 	<!--Desktop-specific-->
-	<window if="desktop"	orientation="portrait" fullscreen="false" resizable="true" />
+	<window if="desktop"	orientation="portrait" fullscreen="false" resizable="false" borderless="true" />
 	
 	<!--Mobile-specific-->
 	<window if="mobile"		orientation="portrait" fullscreen="true" width="0" height="0" />
@@ -72,7 +72,7 @@
 	<!--<haxedef name="FLX_NO_SOUND_SYSTEM" />-->
 	
 	<!--Disable the Flixel core focus lost screen-->
-	<!--<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />-->
+	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />
 	
 	<!--Disable the Flixel core debugger. Automatically gets set whenever you compile in release mode!-->
 	<haxedef name="FLX_NO_DEBUG" unless="debug" />

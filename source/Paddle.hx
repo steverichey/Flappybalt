@@ -1,6 +1,7 @@
 package;
 
 import flixel.FlxG;
+import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.util.FlxRandom;
 
@@ -14,6 +15,7 @@ class Paddle extends FlxSprite
 	{
 		super( X, FlxG.height );
 		loadGraphic( "assets/paddle.png" );
+		setFacingFlip(FlxObject.LEFT, true, false);
 		facing = Facing;
 	}
 	

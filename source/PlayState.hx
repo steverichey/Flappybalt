@@ -58,6 +58,7 @@ class PlayState extends FlxState
 		// To make the game screen-width agnostic, add some faux backgrounds below the city graphic
 		
 		var bgWidth:Int = Std.int((FlxG.width - bg.width) / 2);
+		var bgHeight:Int = Std.int(bg.y);
 		
 		if (bgWidth > 0)
 		{
@@ -79,13 +80,20 @@ class PlayState extends FlxState
 			add(leftLite);
 		}
 		
+		if (bgHeight > 0)
+		{
+			var topLite:FlxSprite = new FlxSprite();
+			topLite.makeGraphic(FlxG.width, bgHeight, Reg.GREY_LIGHT);
+			add(topLite);
+		}
+		
 		add(bg);
 		
 		// Current score.
 		
-		_scoreDisplay = new FlxText( 0, 180, FlxG.width );
+		_scoreDisplay = new FlxText( 0, bg.y + 180, FlxG.width );
 		_scoreDisplay.alignment = "center";
-		_scoreDisplay.color = 0xff868696;
+		_scoreDisplay.color = Reg.GREY_BG_MED;
 		_scoreDisplay.size = 24;
 		add( _scoreDisplay );
 		

@@ -13,7 +13,7 @@ class Paddle extends FlxSprite
 	public function new( X:Float = 0, Facing:Int = 0 )
 	{
 		super( X, FlxG.height );
-		loadGraphic( "assets/paddle.png", false, true );
+		loadGraphic( "assets/paddle.png" );
 		facing = Facing;
 	}
 	

@@ -18,7 +18,9 @@ class Player extends FlxSprite
 	public function new()
 	{
 		super( FlxG.width * 0.5 - 4, FlxG.height * 0.5 - 4 );
-		loadGraphic( "assets/dove.png", true, true );
+		loadGraphic( "assets/dove.png", true, 8, 8);
+		setFacingFlip(FlxObject.LEFT, true, false);
+		setFacingFlip(FlxObject.RIGHT, false, false);
 		animation.frameIndex = 2;
 		animation.add("flap",[1,0,1,2],12,false);
 		

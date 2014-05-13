@@ -10,6 +10,7 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.util.FlxRandom;
 import flixel.util.FlxSave;
+import flixel.util.FlxSpriteUtil;
 
 class PlayState extends FlxState
 {
@@ -18,8 +19,8 @@ class PlayState extends FlxState
 	private var _bounceRight:FlxSprite;
 	private var _paddleLeft:Paddle;
 	private var _paddleRight:Paddle;
-	private var _spikeBottom:FlxSprite;
-	private var _spikeTop:FlxSprite;
+	private var _spikeBottom:Spike;
+	private var _spikeTop:Spike;
 	private var _scoreDisplay:FlxText;
 	private var _feathers:FlxEmitter;
 	private var _highScore:FlxText;
@@ -46,7 +47,34 @@ class PlayState extends FlxState
 		
 		// The background city.
 		
-		add( new FlxSprite( 0, 0, "assets/bg.png" ) );
+		var bg:FlxSprite = new FlxSprite(0, 0, "assets/bg.png");
+		FlxSpriteUtil.screenCenter(bg);
+		
+		// To make the game screen-width agnostic, add some faux backgrounds below the city graphic
+		
+		var bgWidth:Int = Std.int((FlxG.width - bg.width) / 2);
+		
+		if (bgWidth > 0)
+		{
+			var leftLite:FlxSprite = new FlxSprite();
+			leftLite.makeGraphic(bgWidth, Std.int(bg.y + 79), Reg.GREY_LIGHT);
+			
+			var rightLite:FlxSprite = new FlxSprite(bg.x + bg.width, 0);
+			rightLite.makeGraphic(bgWidth, Std.int(bg.y + 93), Reg.GREY_LIGHT);
+			
+			var leftMed:FlxSprite = new FlxSprite(0, leftLite.y + leftLite.height);
+			leftMed.makeGraphic(bgWidth, 61, Reg.GREY_BG_MED);
+			
+			var rightMed:FlxSprite = new FlxSprite(bg.x + bg.width, rightLite.y + rightLite.height);
+			rightMed.makeGraphic(bgWidth, 7, Reg.GREY_BG_MED);
+			
+			add(rightMed);
+			add(leftMed);
+			add(rightLite);
+			add(leftLite);
+		}
+		
+		add(bg);
 		
 		// Current score.
 		
@@ -73,14 +101,14 @@ class PlayState extends FlxState
 		// The left bounce panel. Drawn via code in Reg to fit screen height.
 		
 		_bounceLeft = new FlxSprite( 1, 17 );
-		_bounceLeft.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, false, 4, FlxG.height - 34 );
+		_bounceLeft.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, 4, FlxG.height - 34 );
 		_bounceLeft.animation.add( "flash", [1,0], 8, false);
 		add( _bounceLeft );
 		
 		// The right bounce panel.
 		
 		_bounceRight = new FlxSprite( FlxG.width - 5, 17 );
-		_bounceRight.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, false, 4, FlxG.height - 34 );
+		_bounceRight.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, 4, FlxG.height - 34 );
 		_bounceRight.animation.add( "flash", [1,0], 8, false );
 		add( _bounceRight );
 		
@@ -96,17 +124,19 @@ class PlayState extends FlxState
 		
 		// Spikes at the bottom of the screen
 		
-		_spikeBottom = new FlxSprite( 0, 0, "assets/spike.png" );
-		_spikeBottom.y = FlxG.height - _spikeBottom.height;
+		//_spikeBottom = new FlxSprite( 0, 0, "assets/spike.png" );
+		//_spikeBottom.y = FlxG.height - _spikeBottom.height;
+		_spikeBottom = new Spike(false);
 		add( _spikeBottom );
 		
 		// Spikes at the top of the screen. Rotated to reduce number of assets.
 		
-		_spikeTop = new FlxSprite( 0, 0 );
-		_spikeTop.loadRotatedGraphic( "assets/spike.png", 4 );
-		_spikeTop.angle = 180;
-		_spikeTop.y = -72;
-		add( _spikeTop );
+		//_spikeTop = new FlxSprite( 0, 0 );
+		//_spikeTop.loadRotatedGraphic( "assets/spike.png", 4 );
+		//_spikeTop.angle = 180;
+		//_spikeTop.y = -72;
+		//add( _spikeTop );
+		
 		
 		// The bird.
 		

@@ -22,7 +22,7 @@ keytool -genkey -v -keystore YOUR_RELEASE_KEY.keystore -alias YOUR_ALIAS -keyalg
 
 It will ask for a password and stuff, which you will need to remember! Obviously, use your own values for `YOUR_RELEASE_KEY` and `YOUR_ALIAS`.
 
-5. In order for Lime to see your certificate, you need to add it to the `Project.XML` file. You can add this line:
+In order for Lime to see your certificate, you need to add it to the `Project.XML` file. You can add this line:
 
 ````
 <certificate path="YOUR_RELEASE_KEY.keystore" alias="YOUR_ALIAS" password="YOUR_PASSWORD" if="android" unless="debug"/>
@@ -30,7 +30,7 @@ It will ask for a password and stuff, which you will need to remember! Obviously
 
 Obviously use your own values where appropriate. Now when you run `lime build android` it will sign the app automagically! Just look for `MyApp-release.apk` in `export/android/bin/bin/`.
 
-6. [Upload your APK](https://play.google.com/apps/publish/)! You can set up Google Play stuff too.
+Finally, [upload your APK](https://play.google.com/apps/publish/)! You can set up Google Play stuff too.
 
 ## Optional Steps
 

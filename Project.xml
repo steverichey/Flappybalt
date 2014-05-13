@@ -3,6 +3,7 @@
 	<!------------------------------APPLICATION SETTINGS---------------------------->
 	
 	<app title="Flappybalt" file="Flappybalt" main="Main" version="1.0.0" company="STVR" package="com.steverichey.flappybalt" />
+    <meta package="com.steverichey.flappybalt"/>
 	
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file, or you can set the actual size of your file manually at "Flxpreloader-onUpdate-bytesTotal"!-->
 	<app preloader="flixel.system.FlxPreloader" />

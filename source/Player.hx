@@ -4,14 +4,28 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 
+#if !FLX_NO_TOUCH
+import flash.events.TouchEvent;
+import flash.Lib;
+#end
+
 class Player extends FlxSprite
 {
+	#if !FLX_NO_TOUCH
+	private var _justTouched:Bool = false;
+	#end
+	
 	public function new()
 	{
 		super( FlxG.width * 0.5 - 4, FlxG.height * 0.5 - 4 );
 		loadGraphic( "assets/dove.png", true, true );
 		animation.frameIndex = 2;
 		animation.add("flap",[1,0,1,2],12,false);
+		
+		#if !FLX_NO_TOUCH
+		Lib.current.stage.addEventListener( TouchEvent.TOUCH_BEGIN, onTouchStart );
+		Lib.current.stage.addEventListener( TouchEvent.TOUCH_END, onTouchEnd );
+		#end
 	}
 	
 	override public function update()
@@ -19,7 +33,7 @@ class Player extends FlxSprite
 		#if !FLX_NO_KEYBOARD
 		if ( FlxG.keys.justPressed.SPACE ) {
 		#elseif !FLX_NO_TOUCH
-		if ( FlxG.touches.justStarted().length > 0 ) {
+		if ( _justTouched ) {
 		#end
 			if ( acceleration.y == 0 ) {
 				acceleration.y = 500;
@@ -31,8 +45,24 @@ class Player extends FlxSprite
 			animation.play( "flap", true );
 		}
 		
+		#if !FLX_NO_TOUCH
+		_justTouched = false;
+		#end
+		
 		super.update();
 	}
+	
+	#if !FLX_NO_TOUCH
+	private function onTouchStart( t:TouchEvent ):Void
+	{
+		_justTouched = true;
+	}
+	
+	private function onTouchEnd( t:TouchEvent ):Void
+	{
+		_justTouched = false;
+	}
+	#end
 	
 	override public function kill():Void
 	{

@@ -41,8 +41,7 @@ class Main extends Sprite
 		
 		initialize();
 		
-		var game:FlxGame = new GameClass();
-		addChild(game);
+		addChild(new FlxGame(160, 240, PlayState, 0, 60, false, false));
 	}
 	
 	private function initialize():Void 

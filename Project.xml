@@ -2,7 +2,7 @@
 <project>
 	<!------------------------------APPLICATION SETTINGS---------------------------->
 	
-	<app title="Flappybalt" file="Flappybalt" main="Main" version="1.1" company="STVR" package="com.steverichey.flappybalt" />
+	<app title="Flappybalt" file="Flappybalt" main="Main" version="1.2" company="STVR" package="com.steverichey.flappybalt" />
     <meta package="com.steverichey.flappybalt"/>
 	
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file, or you can set the actual size of your file manually at "Flxpreloader-onUpdate-bytesTotal"!-->
@@ -14,7 +14,7 @@
 	<!--------------------------------WINDOW SETTINGS------------------------------->
 	
 	<!--These window settings apply to all targets-->
-	<window width="480" height="720" fps="60" background="#000000" hardware="true" vsync="true" />
+	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="true" />
 	
 	<!--Web-specific-->
 	<window if="web"		orientation="portrait"  />
@@ -47,6 +47,9 @@
 	<!-- This is required to create a non-debug APK, but you should NOT store the alias or password in a public repo! -->
 	<!--<certificate path="flappybalt.keystore" alias="YOUR_ALIAS" password="YOUR_PASSWORD" if="android" unless="debug"/>-->
 	<template path="libs/AndroidManifest.xml" rename="AndroidManifest.xml" if="android"/>
+	
+	<certificate identity="iPhone Developer" if="ios" unless="debug" />
+	<certificate path="flappybalt.keystore" if="android" unless="debug" />
 	
 	<!---------------------------------HAXEDEFINES---------------------------------->
 	

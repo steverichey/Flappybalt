@@ -1,27 +1,21 @@
 package;
 
 import flash.display.Sprite;
-import flash.display.StageAlign;
-import flash.display.StageScaleMode;
 import flash.events.Event;
 import flash.Lib;
 import flixel.FlxGame;
 
-/**
- * @author Joshua Granick
- */
-class Main extends Sprite 
+class Main extends Sprite
 {
-	// Entry point
 	static public function main():Void
-	{	
+	{
 		Lib.current.addChild(new Main());
 	}
 	
 	public function new() 
 	{
 		super();
-		
+
 		if (stage != null) 
 		{
 			init();
@@ -39,14 +33,6 @@ class Main extends Sprite
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
-		initialize();
-		
-		addChild(new FlxGame(160, 240, PlayState, 0, 60, false, false));
-	}
-	
-	private function initialize():Void 
-	{
-		Lib.current.stage.align = StageAlign.TOP_LEFT;
-		Lib.current.stage.scaleMode = StageScaleMode.NO_SCALE;
+		addChild(new FlxGame(600, 300, PlayState));
 	}
 }

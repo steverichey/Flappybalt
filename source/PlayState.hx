@@ -12,12 +12,13 @@ import flixel.ui.FlxButton;
 import flixel.math.FlxRandom;
 import flixel.util.FlxSave;
 import flixel.util.FlxSpriteUtil;
+import flixel.input.keyboard.FlxKeyName;
 
 class PlayState extends FlxState
 {
-	private var _player:Player;
-	private var _bounceLeft:FlxSprite;
-	private var _bounceRight:FlxSprite;
+	private var _birds:FlxTypedGroup<Player>;
+	private var _bumpers:FlxTypedGroup<Bumper>;
+	
 	private var _paddleLeft:Paddle;
 	private var _paddleRight:Paddle;
 	private var _spikeBottom:Spike;
@@ -26,9 +27,10 @@ class PlayState extends FlxState
 	private var _feathers:FlxEmitter;
 	private var _highScore:FlxText;
 	
-	#if !FLX_NO_MOUSE
-	private var _dragging:Bool = false;
-	#end
+	private var bestCurrentScore:Int = 0;
+	private var bestHighScore:Int = 0;
+	
+	private var _registeredButtons:Array<FlxKeyName>;
 	
 	inline static private var SAVE_DATA:String = "FLAPPYBALT";
 	
@@ -50,56 +52,16 @@ class PlayState extends FlxState
 		FlxG.mouse.visible = false;
 		#end
 		
-		// The background city.
-		
-		var bg:FlxSprite = new FlxSprite(0, 0, "assets/bg.png");
-		FlxSpriteUtil.screenCenter(bg);
-		
-		// To make the game screen-width agnostic, add some faux backgrounds below the city graphic
-		
-		var bgWidth:Int = Std.int((FlxG.width - bg.width) / 2);
-		var bgHeight:Int = Std.int(bg.y);
-		
-		if (bgWidth > 0)
-		{
-			var leftLite:FlxSprite = new FlxSprite();
-			leftLite.makeGraphic(bgWidth, Std.int(bg.y + 79), Reg.GREY_LIGHT);
-			
-			var rightLite:FlxSprite = new FlxSprite(bg.x + bg.width, 0);
-			rightLite.makeGraphic(bgWidth, Std.int(bg.y + 93), Reg.GREY_LIGHT);
-			
-			var leftMed:FlxSprite = new FlxSprite(0, leftLite.y + leftLite.height);
-			leftMed.makeGraphic(bgWidth, 61, Reg.GREY_BG_MED);
-			
-			var rightMed:FlxSprite = new FlxSprite(bg.x + bg.width, rightLite.y + rightLite.height);
-			rightMed.makeGraphic(bgWidth, 7, Reg.GREY_BG_MED);
-			
-			add(rightMed);
-			add(leftMed);
-			add(rightLite);
-			add(leftLite);
-		}
-		
-		if (bgHeight > 0)
-		{
-			var topLite:FlxSprite = new FlxSprite();
-			topLite.makeGraphic(FlxG.width, bgHeight, Reg.GREY_LIGHT);
-			add(topLite);
-		}
-		
-		add(bg);
+		var city:City = new City();
+		add(city);
 		
 		// Current score.
 		
-		_scoreDisplay = new FlxText( 0, bg.y + 180, FlxG.width );
+		_scoreDisplay = new FlxText( 0, FlxG.height - 64, FlxG.width );
 		_scoreDisplay.alignment = "center";
 		_scoreDisplay.color = Reg.GREY_BG_MED;
 		_scoreDisplay.size = 24;
 		add( _scoreDisplay );
-		
-		// Update all-time high score.
-		
-		Reg.highScore = loadScore();
 		
 		// Display high score.
 		
@@ -108,22 +70,21 @@ class PlayState extends FlxState
 		_highScore.color = 0xff868696;
 		add( _highScore );
 		
+		Reg.highScore = loadScore();
+		
 		if ( Reg.highScore > 0 )
+		{
 			_highScore.text = Std.string( Reg.highScore );
+		}
 		
-		// The left bounce panel. Drawn via code in Reg to fit screen height.
+		_bumpers = new FlxTypedGroup<Bumper>();
 		
-		_bounceLeft = new FlxSprite( 1, 17 );
-		_bounceLeft.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, 4, FlxG.height - 34 );
-		_bounceLeft.animation.add( "flash", [1,0], 8, false);
-		add( _bounceLeft );
+		// The left and right main bumpers.
 		
-		// The right bounce panel.
+		_bumpers.add(new Bumper(1, 17, 4, FlxG.height - 34));
+		_bumpers.add(new Bumper(FlxG.width - 5, 17, 4, FlxG.height - 34));
 		
-		_bounceRight = new FlxSprite( FlxG.width - 5, 17 );
-		_bounceRight.loadGraphic( Reg.getBounceImage( FlxG.height - 34 ), true, 4, FlxG.height - 34 );
-		_bounceRight.animation.add( "flash", [1,0], 8, false );
-		add( _bounceRight );
+		add(_bumpers);
 		
 		// The left spiky paddle
 		
@@ -145,10 +106,16 @@ class PlayState extends FlxState
 		_spikeTop = new Spike(true);
 		add(_spikeTop);
 		
-		// The bird.
+		// Stored buttons
 		
-		_player = new Player();
-		add( _player );
+		_registeredButtons = [];
+		_registeredButtons.push("SPACE");
+		
+		// The birds.
+		
+		_birds = new FlxTypedGroup<Player>();
+		_birds.add(new Player("SPACE", true));
+		add(_birds);
 		
 		// A simple emitter to make some feathers when the bird gets spiked.
 		
@@ -158,73 +125,76 @@ class PlayState extends FlxState
 		_feathers.setYSpeed( -10, 10 );
 		_feathers.gravity = 10;
 		add( _feathers );
+		
+		FlxG.log.add("eypyp" + FlxRandom.int());
 	}
 	
 	override public function update():Void
 	{
-		if ( FlxG.pixelPerfectOverlap( _player, _spikeBottom ) || FlxG.pixelPerfectOverlap( _player, _spikeTop ) 
-				|| FlxG.pixelPerfectOverlap( _player, _paddleLeft ) || FlxG.pixelPerfectOverlap( _player, _paddleRight ) ) {
-			_player.kill();
-		} else if ( _player.x < 5 ) {
-			_player.x = 5;
-			_player.velocity.x = -_player.velocity.x;
-			_player.facing = FlxObject.RIGHT;
-			Reg.score++;
-			_scoreDisplay.text = Std.string( Reg.score );
-			_bounceLeft.animation.play( "flash" );
-			_paddleRight.randomize();
-		} else if ( _player.x + _player.width > FlxG.width - 5 ) {
-			_player.x = FlxG.width - _player.width - 5;
-			_player.velocity.x = -_player.velocity.x;
-			_player.facing = FlxObject.LEFT;
-			Reg.score++;
-			_scoreDisplay.text = Std.string( Reg.score );
-			_bounceRight.animation.play( "flash" );
-			_paddleLeft.randomize();
+		for (bird in _birds)
+		{
+			if ( FlxG.pixelPerfectOverlap( bird, _spikeBottom ) 
+					|| FlxG.pixelPerfectOverlap( bird, _spikeTop ) 
+					|| FlxG.pixelPerfectOverlap( bird, _paddleLeft )
+					|| FlxG.pixelPerfectOverlap( bird, _paddleRight ) )
+			{
+				bird.kill();
+			}
 		}
 		
 		#if !FLX_NO_KEYBOARD
-		if( FlxG.keys.justPressed.E && ( FlxG.keys.pressed.CONTROL || FlxG.keys.pressed.SHIFT || FlxG.keys.pressed.ALT ) )
+		if (FlxG.keys.justPressed.ANY && !FlxG.keys.anyJustPressed(_registeredButtons))
 		{
-			clearSave();
-			FlxG.resetState();
+			_registeredButtons.push(FlxG.keys.firstPressed());
+			_birds.add(new Player(FlxG.keys.firstPressed(), false));
 		}
 		#end
 		
-		// This is supposed to enable window movement for desktop releases, but it doesn't work ATM.
-		
-		#if !FLX_NO_MOUSE
-		if (FlxG.mouse.justPressed)
-		{
-			_dragging = true;
-		}
-		
-		if (FlxG.mouse.justReleased)
-		{
-			_dragging = false;
-		}
-		
-		//if (_dragging && Lib.current.stage.parent != null)
-		//{
-		//	Lib.current.stage.parent.x = FlxG.mouse.x - 10;
-		//	Lib.current.stage.parent.y = FlxG.mouse.y - 10;
-		//}
-		//if (_dragging)
-		//{
-		//	Lib.current.parent.x -= 1;
-		//}
-		#end
+		FlxG.collide(_birds, _bumpers, birdBounce);
+		FlxG.collide(_birds, _birds);
 		
 		super.update();
+	}
+	
+	private function birdBounce(Bird:Player, Bump:Bumper):Void
+	{
+		Bird.bounce();
+		Bump.animation.play( "flash" );
+		
+		if (Bird.score > bestCurrentScore)
+		{
+			bestCurrentScore = Bird.score;
+			
+			#if !mobile
+			_scoreDisplay.color = Bird.color;
+			#end
+		}
+		
+		_scoreDisplay.text = Std.string( bestCurrentScore );
+		
+		if (Bird.x > FlxG.width / 2)
+		{
+			_paddleRight.randomize();
+		}
+		else
+		{
+			_paddleLeft.randomize();
+		}
 	}
 	
 	/**
 	 * Launch a bunch of feathers at X and Y.
 	 */
-	public function launchFeathers( X:Float, Y:Float, Amount:Int ):Void
+	public function launchFeathers( X:Float, Y:Float, Amount:Int, Color:Int ):Void
 	{
 		_feathers.x = X;
 		_feathers.y = Y;
+		
+		for (feather in _feathers)
+		{
+			feather.color = Color;
+		}
+		
 		_feathers.start( true, 2, 0, Amount, 1 );
 	}
 	
@@ -233,7 +203,7 @@ class PlayState extends FlxState
 	 */
 	public function randomPaddleY():Int
 	{
-		return FlxRandom.intRanged( Std.int( _bounceLeft.y ), Std.int( _bounceLeft.y + _bounceLeft.height - _paddleLeft.height ) );
+		return FlxRandom.int(17, Std.int(FlxG.height - 34 - _paddleLeft.height));
 	}
 	
 	/**
@@ -243,12 +213,12 @@ class PlayState extends FlxState
 	{
 		_paddleLeft.y = FlxG.height;
 		_paddleRight.y = FlxG.height;
-		Reg.score = 0;
-		_scoreDisplay.text = "";
 		Reg.highScore = loadScore();
 		
 		if ( Reg.highScore > 0 )
+		{
 			_highScore.text = Std.string( Reg.highScore );
+		}
 	}
 	
 	/**
@@ -260,8 +230,10 @@ class PlayState extends FlxState
 		
 		if( Reg.save.bind( SAVE_DATA ) )
 		{
-			if( ( Reg.save.data.score == null ) || ( Reg.save.data.score < Reg.score ) )
-				Reg.save.data.score = Reg.score;
+			if ( ( Reg.save.data.score == null ) || ( Reg.save.data.score < Reg.highScore ) )
+			{
+				Reg.save.data.score = Reg.highScore;
+			}
 		}
 		
 		// Have to do this in order for saves to work on native targets!
@@ -285,16 +257,5 @@ class PlayState extends FlxState
 		}
 		
 		return 0;
-	}
-	
-	/**
-	 * Wipe save data.
-	 */
-	static public function clearSave():Void
-	{
-		Reg.save = new FlxSave();
-		
-		if( Reg.save.bind( SAVE_DATA ) )
-			Reg.save.erase();
 	}
 }

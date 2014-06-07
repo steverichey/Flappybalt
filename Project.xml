@@ -14,13 +14,13 @@
 	<!--------------------------------WINDOW SETTINGS------------------------------->
 	
 	<!--These window settings apply to all targets-->
-	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="true" />
+	<window width="1200" height="600" fps="60" background="#000000" hardware="true" vsync="true" />
 	
 	<!--Web-specific-->
 	<window if="web"		orientation="portrait"  />
 	
 	<!--Desktop-specific-->
-	<window if="desktop"	orientation="portrait" fullscreen="false" resizable="false" borderless="true" />
+	<window if="desktop"	orientation="portrait" fullscreen="false" resizable="false" borderless="false" />
 	
 	<!--Mobile-specific-->
 	<window if="mobile"		orientation="portrait" fullscreen="true" width="0" height="0" />
@@ -30,8 +30,7 @@
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
 	
-	<!--You can use rename="newName" to shorten the paths to individual subdirectories!-->
-	<assets path="assets" />
+	<assets path="assets" embed="true" />
 	
 	<!--------------------------------LIBRARIES------------------------------------->
 	
@@ -44,12 +43,10 @@
 	
 	<!---------------------------------OTHER---------------------------------------->
 	
-	<!-- This is required to create a non-debug APK, but you should NOT store the alias or password in a public repo! -->
-	<!--<certificate path="flappybalt.keystore" alias="YOUR_ALIAS" password="YOUR_PASSWORD" if="android" unless="debug"/>-->
+	<certificate path="flappybalt.keystore" alias="flappybalt" if="android" unless="debug"/>
 	<template path="libs/AndroidManifest.xml" rename="AndroidManifest.xml" if="android"/>
 	
 	<certificate identity="iPhone Developer" if="ios" unless="debug" />
-	<certificate path="flappybalt.keystore" if="android" unless="debug" />
 	
 	<!---------------------------------HAXEDEFINES---------------------------------->
 	
@@ -65,14 +62,8 @@
 	<!--Optimise inputs, be careful you will get null errors if you don't use conditionals in your game-->
 	<haxedef name="FLX_NO_MOUSE" if="mobile" />
 	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
-	<haxedef name="FLX_NO_TOUCH" if="desktop" />
+	<haxedef name="FLX_NO_TOUCH" unless="mobile" />
 	<haxedef name="FLX_NO_GAMEPAD" />
-	
-	<!--Disable the Flixel core sound tray-->
-	<!--<haxedef name="FLX_NO_SOUND_TRAY" />-->
-	
-	<!--Disable the Flixel sound management code-->
-	<!--<haxedef name="FLX_NO_SOUND_SYSTEM" />-->
 	
 	<!--Disable the Flixel core focus lost screen-->
 	<haxedef name="FLX_NO_FOCUS_LOST_SCREEN" />

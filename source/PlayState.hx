@@ -18,21 +18,19 @@ class PlayState extends FlxState
 {
 	private var _birds:FlxTypedGroup<Player>;
 	private var _bumpers:FlxTypedGroup<Bumper>;
+	private var _spikes:FlxTypedGroup<FloatingSpike>;
 	
 	private var _paddleLeft:Paddle;
 	private var _paddleRight:Paddle;
 	private var _spikeBottom:Spike;
 	private var _spikeTop:Spike;
 	private var _scoreDisplay:FlxText;
-	private var _feathers:FlxEmitter;
 	private var _highScore:FlxText;
 	
 	private var bestCurrentScore:Int = 0;
 	private var bestHighScore:Int = 0;
 	
 	private var _registeredButtons:Array<FlxKeyName>;
-	
-	inline static private var SAVE_DATA:String = "FLAPPYBALT";
 	
 	override public function create():Void
 	{
@@ -70,11 +68,11 @@ class PlayState extends FlxState
 		_highScore.color = 0xff868696;
 		add( _highScore );
 		
-		Reg.highScore = loadScore();
+		bestHighScore = Save.loadScore();
 		
-		if ( Reg.highScore > 0 )
+		if ( bestHighScore > 0 )
 		{
-			_highScore.text = Std.string( Reg.highScore );
+			_highScore.text = Std.string( bestHighScore );
 		}
 		
 		_bumpers = new FlxTypedGroup<Bumper>();
@@ -86,14 +84,19 @@ class PlayState extends FlxState
 		
 		add(_bumpers);
 		
+		// Floating spike objects
+		
+		_spikes = new FlxTypedGroup<FloatingSpike>();
+		add(_spikes);
+		
 		// The left spiky paddle
 		
-		_paddleLeft = new Paddle( 6, FlxObject.RIGHT );
+		_paddleLeft = new Paddle(6);
 		add( _paddleLeft );
 		
 		// The right spiky paddle
 		
-		_paddleRight = new Paddle( FlxG.width-15, FlxObject.LEFT );
+		_paddleRight = new Paddle(FlxG.width-15);
 		add( _paddleRight );
 		
 		// Spikes at the bottom of the screen
@@ -116,15 +119,6 @@ class PlayState extends FlxState
 		_birds = new FlxTypedGroup<Player>();
 		_birds.add(new Player("SPACE", true));
 		add(_birds);
-		
-		// A simple emitter to make some feathers when the bird gets spiked.
-		
-		_feathers = new FlxEmitter();
-		_feathers.makeParticles( "assets/feather.png", 50, 32 );
-		_feathers.setXSpeed( -10, 10 );
-		_feathers.setYSpeed( -10, 10 );
-		_feathers.gravity = 10;
-		add( _feathers );
 	}
 	
 	override public function update():Void
@@ -134,9 +128,18 @@ class PlayState extends FlxState
 			if ( FlxG.pixelPerfectOverlap( bird, _spikeBottom ) 
 					|| FlxG.pixelPerfectOverlap( bird, _spikeTop ) 
 					|| FlxG.pixelPerfectOverlap( bird, _paddleLeft )
-					|| FlxG.pixelPerfectOverlap( bird, _paddleRight ) )
+					|| FlxG.pixelPerfectOverlap( bird, _paddleRight )
+					|| FlxG.overlap(bird, _spikes) )
 			{
 				bird.kill();
+			}
+			
+			if (bird.lonely)
+			{
+				_registeredButtons.remove(bird.button);
+				_birds.remove(bird, true);
+				bird.destroy();
+				bird = null;
 			}
 		}
 		
@@ -157,7 +160,7 @@ class PlayState extends FlxState
 	private function birdBounce(Bird:Player, Bump:Bumper):Void
 	{
 		Bird.bounce();
-		Bump.animation.play( "flash" );
+		Bump.bounce();
 		
 		if (Bird.score > bestCurrentScore)
 		{
@@ -165,6 +168,13 @@ class PlayState extends FlxState
 			
 			#if !mobile
 			_scoreDisplay.color = Bird.color;
+			
+			if (bestCurrentScore > bestHighScore)
+			{
+				bestHighScore = bestCurrentScore;
+				_highScore.text = Std.string(bestHighScore);
+				_highScore.color = _scoreDisplay.color;
+			}
 			#end
 		}
 		
@@ -182,33 +192,14 @@ class PlayState extends FlxState
 		#if !mobile
 		if (FlxRandom.chanceRoll(10))
 		{
-			_bumpers.add(new Bumper(FlxRandom.int(20, FlxG.width - 20), FlxG.height, FlxRandom.int(4, 16), FlxRandom.int(4, 16), false));
+			_bumpers.add(new Bumper(FlxRandom.int(20, FlxG.width - 20), FlxRandom.chanceRoll() ? 0 : FlxG.height, FlxRandom.int(4, 16), FlxRandom.int(4, 16), false));
+		}
+		
+		if (FlxRandom.chanceRoll(5))
+		{
+			_spikes.add(new FloatingSpike());
 		}
 		#end
-	}
-	
-	/**
-	 * Launch a bunch of feathers at X and Y.
-	 */
-	public function launchFeathers( X:Float, Y:Float, Amount:Int, Color:Int ):Void
-	{
-		_feathers.x = X;
-		_feathers.y = Y;
-		
-		for (feather in _feathers)
-		{
-			feather.color = Color;
-		}
-		
-		_feathers.start( true, 2, 0, Amount, 1 );
-	}
-	
-	/**
-	 * Returns a random valid position for the paddle to slide to.
-	 */
-	public function randomPaddleY():Int
-	{
-		return FlxRandom.int(17, Std.int(FlxG.height - 34 - _paddleLeft.height));
 	}
 	
 	/**
@@ -218,49 +209,5 @@ class PlayState extends FlxState
 	{
 		_paddleLeft.y = FlxG.height;
 		_paddleRight.y = FlxG.height;
-		Reg.highScore = loadScore();
-		
-		if ( Reg.highScore > 0 )
-		{
-			_highScore.text = Std.string( Reg.highScore );
-		}
-	}
-	
-	/**
-	 * Safely store a new high score into the saved session, if possible.
-	 */
-	static public function saveScore():Void
-	{
-		Reg.save = new FlxSave();
-		
-		if( Reg.save.bind( SAVE_DATA ) )
-		{
-			if ( ( Reg.save.data.score == null ) || ( Reg.save.data.score < Reg.highScore ) )
-			{
-				Reg.save.data.score = Reg.highScore;
-			}
-		}
-		
-		// Have to do this in order for saves to work on native targets!
-		
-		Reg.save.flush();
-	}
-	
-	/**
-	 * Load data from the saved session.
-	 * 
-	 * @return	The total points of the saved high score.
-	 */
-	static public function loadScore():Int
-	{
-		Reg.save = new FlxSave();
-		
-		if( Reg.save.bind( SAVE_DATA ) )
-		{
-			if( ( Reg.save.data != null ) && ( Reg.save.data.score != null ) )
-				return Reg.save.data.score;
-		}
-		
-		return 0;
 	}
 }

@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxMath;
 import flixel.math.FlxRandom;
 import flixel.util.FlxSpriteUtil;
 import flixel.math.FlxPoint;
@@ -60,33 +61,46 @@ class City extends FlxSprite
 		var vertices:Array<FlxPoint> = [];
 		var xPos:Int = 0;
 		var yPos:Int = Std.int((MaxY - MinY) / 2 + MinY);
-		var lastHorizontal:Bool = false;
-		var lastVertical:Bool = false;
+		var current:Int = 0;
+		var last:Int = 0;
+		var move:Int = 0;
 		
 		while (xPos < FlxG.width)
 		{
 			vertices.push(new FlxPoint(xPos, yPos));
 			
-			if (FlxRandom.chanceRoll(30) && !lastHorizontal)
+			current = FlxRandom.int(0, 4, [last]);
+			
+			switch (current)
 			{
-				xPos += 10;
-				lastHorizontal = true;
-				lastVertical = false;
+				case 0:
+					xPos += FlxRandom.int(10, 30);
+				case 1:
+					if (last != 2) // prevent going straight down then up
+					{
+						yPos -= FlxRandom.int(5, 20);
+						yPos = Std.int(FlxMath.bound(yPos, MinY, MaxY));
+					}
+				case 2:
+					if (last != 1) // prevent going straight up then down
+					{
+						yPos += FlxRandom.int(10, 40);
+					}
+				case 3:
+					yPos -= FlxRandom.int(10, 20);
+					vertices.push(new FlxPoint(xPos, yPos));
+					xPos -= FlxRandom.int(2, 5);
+					vertices.push(new FlxPoint(xPos, yPos));
+					yPos -= FlxRandom.int(3, 6);
+					vertices.push(new FlxPoint(xPos, yPos));
+					xPos += FlxRandom.int(9, 30);
+				case 4:
+					move = FlxRandom.int(10, 20);
+					xPos += move;
+					yPos += move;
 			}
-			else if (!lastVertical)
-			{
-				if (FlxRandom.chanceRoll() && yPos > MinY)
-				{
-					yPos -= FlxRandom.int(5, 20);
-				}
-				else if (yPos < MaxY)
-				{
-					yPos += FlxRandom.int(10, 40);
-				}
-				
-				lastHorizontal = false;
-				lastVertical = true;
-			}
+			
+			last = current;
 		}
 		
 		vertices.push(new FlxPoint(FlxG.width, yPos));

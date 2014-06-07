@@ -32,11 +32,11 @@ class Spike extends FlxSprite
 			
 			// The left side of the spike graphic.
 			
-			var left:FlxSprite = new FlxSprite(0, 0, "assets/spike_left.png");
+			var left:FlxSprite = new FlxSprite(0, 0, "images/spike_left.png");
 			
 			// The bottom of the spike graphic. Repeated as necessary to fill the screen width.
 			
-			var bottom:FlxSprite = new FlxSprite(0, 0, "assets/spike_bottom.png");
+			var bottom:FlxSprite = new FlxSprite(0, 0, "images/spike_bottom.png");
 			var xPos:Int = Std.int(left.width);
 			
 			while (xPos < FlxG.width)
@@ -47,11 +47,11 @@ class Spike extends FlxSprite
 			
 			// The right side of the spike graphic
 			
-			var right:FlxSprite = new FlxSprite(0, 0, "assets/spike_right.png");
+			var right:FlxSprite = new FlxSprite(0, 0, "images/spike_right.png");
 			
 			// The actual spikes. Repeated as necessary to fill the graphic.
 			
-			var top:FlxSprite = new FlxSprite(0, 0, "assets/spike_top.png");
+			var top:FlxSprite = new FlxSprite(0, 0, "images/spike_top.png");
 			
 			// A small offset from the left to make the spikes look a bit better.
 			

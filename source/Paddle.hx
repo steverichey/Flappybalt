@@ -4,40 +4,24 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.math.FlxRandom;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
+import flixel.tweens.misc.VarTween;
 
 class Paddle extends FlxSprite
 {
 	public var targetY:Int = 0;
 	
-	inline static public var SPEED:Int = 480;
-	
-	public function new( X:Float = 0, Facing:Int = 0 )
+	public function new( X:Float = 0 )
 	{
 		super( X, FlxG.height );
-		loadGraphic( "assets/paddle.png" );
+		loadGraphic( "images/paddle.png" );
 		setFacingFlip(FlxObject.LEFT, true, false);
-		facing = Facing;
+		facing = X < FlxG.width / 2 ? FlxObject.RIGHT : FlxObject.LEFT;
 	}
 	
-	public function randomize():Void
+	public function randomize():VarTween
 	{
-		targetY = Reg.PS.randomPaddleY();
-		
-		if( targetY < y )
-			velocity.y = -SPEED;
-		else
-			velocity.y = SPEED;
-	}
-	
-	override public function update():Void
-	{
-		if( ((velocity.y < 0) && (y <= targetY + SPEED*FlxG.elapsed)) ||
-			((velocity.y > 0) && (y >= targetY - SPEED*FlxG.elapsed)) )
-		{
-			velocity.y = 0;
-			y = targetY;
-		}
-		
-		super.update();
+		return FlxTween.tween(this, { y: FlxRandom.float(17, FlxG.height - 34 - height )}, FlxRandom.float(0.75, 1.5), { ease: FlxEase.bounceOut } );
 	}
 }

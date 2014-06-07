@@ -30,7 +30,14 @@
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
 	
-	<assets path="assets" embed="true" />
+	<assets path="assets/sounds" embed="true">
+		<sound path="bounce.mp3" id="bounce" if="flash" />
+		<sound path="bounce.ogg" id="bounce" unless="flash" />
+		<sound path="explode.mp3" id="explode" if="flash" />
+		<sound path="explode.ogg" id="explode" unless="flash" />
+	</assets>
+	
+	<assets path="assets/images" rename="images" embed="true"/>
 	
 	<!--------------------------------LIBRARIES------------------------------------->
 	

@@ -2,12 +2,14 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.math.FlxRandom;
+import flixel.tweens.FlxTween;
 import openfl.display.BitmapData;
 import openfl.geom.Rectangle;
 
 class Bumper extends FlxSprite
 {
-	public function new(X:Float, Y:Float, Width:Int, Height:Int)
+	public function new(X:Float, Y:Float, Width:Int, Height:Int, Stationary:Bool = true)
 	{
 		super(X, Y);
 		
@@ -16,6 +18,11 @@ class Bumper extends FlxSprite
 		
 		immovable = true;
 		elasticity = 1;
+		
+		if (!Stationary)
+		{
+			FlxTween.tween(this, { y: FlxRandom.int(20, Std.int(FlxG.height - 20 - height)) }, FlxRandom.float(0, 10) );
+		}
 	}
 	
 	

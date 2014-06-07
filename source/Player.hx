@@ -37,7 +37,7 @@ class Player extends FlxSprite
 		
 		if (!First)
 		{
-			color = FlxRandom.color( { min: 128 } );
+			color = FlxRandom.color( { max: 64 } );
 			x += FlxRandom.float( -20, 20);
 			y += FlxRandom.float( -20, 20);
 		}

@@ -125,8 +125,6 @@ class PlayState extends FlxState
 		_feathers.setYSpeed( -10, 10 );
 		_feathers.gravity = 10;
 		add( _feathers );
-		
-		FlxG.log.add("eypyp" + FlxRandom.int());
 	}
 	
 	override public function update():Void
@@ -180,6 +178,13 @@ class PlayState extends FlxState
 		{
 			_paddleLeft.randomize();
 		}
+		
+		#if !mobile
+		if (FlxRandom.chanceRoll(10))
+		{
+			_bumpers.add(new Bumper(FlxRandom.int(20, FlxG.width - 20), FlxG.height, FlxRandom.int(4, 16), FlxRandom.int(4, 16), false));
+		}
+		#end
 	}
 	
 	/**

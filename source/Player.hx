@@ -45,6 +45,7 @@ class Player extends FlxSprite
 		solid = false;
 		
 		button = Button;
+		Reg.PS.registeredButtons.push(button);
 		
 		if (!First)
 		{
@@ -83,6 +84,7 @@ class Player extends FlxSprite
 			
 			velocity.y = -240;
 			
+			FlxG.sound.play("flap");
 			animation.play( "flap", true );
 		}
 		else if (acceleration.y == 0 && velocity.x == 0)
@@ -107,9 +109,14 @@ class Player extends FlxSprite
 		return _lonelyTimer > HOW_LONG_UNTIL_LONELY;
 	}
 	
-	public function bounce():Void
+	public function bounce(IsBird:Bool = false):Void
 	{
 		score++;
+		
+		if (IsBird)
+		{
+			molt(2);
+		}
 	}
 	
 	private function justFlapped():Bool
@@ -130,9 +137,7 @@ class Player extends FlxSprite
 		
 		super.kill();
 		
-		_feathers.x = x;
-		_feathers.y = y;
-		_feathers.start(true, 2, 0, 10);
+		molt(10);
 		
 		FlxG.sound.play("explode");
 		FlxG.camera.flash( color, 0.25, onFlashDone );
@@ -152,9 +157,23 @@ class Player extends FlxSprite
 		super.revive();
 	}
 	
+	private function molt(Amount:Int):Void
+	{
+		_feathers.x = x;
+		_feathers.y = y;
+		_feathers.start(true, 2, 0, Amount);
+	}
+	
 	public function onFlashDone():Void
 	{
 		revive();
 		Reg.PS.reset();
+	}
+	
+	override public function destroy():Void
+	{
+		Reg.PS.registeredButtons.remove(button);
+		
+		super.destroy();
 	}
 }

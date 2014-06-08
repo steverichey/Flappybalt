@@ -35,6 +35,10 @@
 		<sound path="bounce.ogg" id="bounce" unless="flash" />
 		<sound path="explode.mp3" id="explode" if="flash" />
 		<sound path="explode.ogg" id="explode" unless="flash" />
+		<sound path="hurt.mp3" id="hurt" if="flash" />
+		<sound path="hurt.ogg" id="hurt" unless="flash" />
+		<sound path="flap.mp3" id="flap" if="flash" />
+		<sound path="flap.ogg" id="flap" unless="flash" />
 	</assets>
 	
 	<assets path="assets/images" rename="images" embed="true"/>

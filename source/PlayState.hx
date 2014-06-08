@@ -30,7 +30,7 @@ class PlayState extends FlxState
 	private var bestCurrentScore:Int = 0;
 	private var bestHighScore:Int = 0;
 	
-	private var _registeredButtons:Array<FlxKeyName>;
+	public var registeredButtons:Array<FlxKeyName>;
 	
 	override public function create():Void
 	{
@@ -111,8 +111,7 @@ class PlayState extends FlxState
 		
 		// Stored buttons
 		
-		_registeredButtons = [];
-		_registeredButtons.push("SPACE");
+		registeredButtons = [];
 		
 		// The birds.
 		
@@ -134,9 +133,8 @@ class PlayState extends FlxState
 				bird.kill();
 			}
 			
-			if (bird.lonely)
+			if (bird.lonely && _birds.length > 1)
 			{
-				_registeredButtons.remove(bird.button);
 				_birds.remove(bird, true);
 				bird.destroy();
 				bird = null;
@@ -144,15 +142,14 @@ class PlayState extends FlxState
 		}
 		
 		#if !FLX_NO_KEYBOARD
-		if (FlxG.keys.justPressed.ANY && !FlxG.keys.anyJustPressed(_registeredButtons))
+		if (FlxG.keys.justPressed.ANY && !FlxG.keys.anyJustPressed(registeredButtons))
 		{
-			_registeredButtons.push(FlxG.keys.firstPressed());
 			_birds.add(new Player(FlxG.keys.firstPressed(), false));
 		}
 		#end
 		
 		FlxG.collide(_birds, _bumpers, birdBounce);
-		FlxG.collide(_birds, _birds);
+		FlxG.collide(_birds, _birds, birdOnBirdViolence);
 		
 		super.update();
 	}
@@ -200,6 +197,13 @@ class PlayState extends FlxState
 			_spikes.add(new FloatingSpike());
 		}
 		#end
+	}
+	
+	private function birdOnBirdViolence(Bird:Player, AnotherBird:Player):Void
+	{
+		FlxG.sound.play("hurt");
+		Bird.bounce(true);
+		Bird.bounce(true);
 	}
 	
 	/**

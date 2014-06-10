@@ -86,6 +86,7 @@ class Player extends FlxSprite
 			
 			FlxG.sound.play("flap");
 			animation.play( "flap", true );
+			Reg.PS.makeDust(x + width / 2, y);
 		}
 		else if (acceleration.y == 0 && velocity.x == 0)
 		{

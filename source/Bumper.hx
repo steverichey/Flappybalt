@@ -42,7 +42,7 @@ class Bumper extends FlxSprite
 	 * 
 	 * @param   Width   The width of the bumper to draw.
 	 * @param	Height	The height of the bumper to draw.
-	 * @return	A BitmapData object representing the paddle. Cached for the second paddle to save time.
+	 * @return	A BitmapData object representing the paddle.
 	 */
 	static public function drawBumper(Width:Int, Height:Int):BitmapData
 	{

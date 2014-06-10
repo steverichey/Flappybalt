@@ -37,7 +37,7 @@ class PlayState extends FlxState
 	public var registeredButtons:Array<FlxKeyName>;
 	
 	inline static private var BUMPER_CHANCE:Float = 15;
-	inline static private var SPIKE_CHANCE:Float = 100;
+	inline static private var SPIKE_CHANCE:Float = 5;
 	
 	override public function create():Void
 	{
@@ -73,7 +73,7 @@ class PlayState extends FlxState
 		_highScore = new FlxText( 0, 40, FlxG.width, "" );
 		_highScore.alignment = "center";
 		_highScore.color = 0xff868696;
-		add( _highScore );
+		//add( _highScore );
 		
 		bestHighScore = Save.loadScore();
 		
@@ -120,17 +120,11 @@ class PlayState extends FlxState
 		
 		registeredButtons = [];
 		
-		// The birds.
-		
-		_birds = new FlxTypedGroup<Player>();
-		_birds.add(new Player("SPACE", true));
-		add(_birds);
-		
 		// Some dust
 		
 		_dust = new FlxEmitter();
 		
-		for (i in 0...50)
+		for (i in 0...500)
 		{
 			var mote:FlxParticle = new FlxParticle();
 			var size:Int = FlxRandom.int(1, 3);
@@ -144,6 +138,18 @@ class PlayState extends FlxState
 		_dust.life.set(0.5, 1);
 		_dust.endAlpha.set(0, 0);
 		add(_dust);
+		
+		// The birds.
+		
+		_birds = new FlxTypedGroup<Player>();
+		_birds.add(new Player("SPACE", true));
+		add(_birds);
+		
+		// just for the branding! set screen to 256x256
+		
+		//var title:FlxText = new FlxText(0, 32, FlxG.width, "FLAPPYBALT HD", 24);
+		//title.alignment = "center";
+		//add(title);
 	}
 	
 	override public function update():Void
@@ -246,7 +252,7 @@ class PlayState extends FlxState
 		AnotherBird.bounce(true);
 	}
 	
-	private function makeDust(X:Float, Y:Float, Direction:DustDirection = DustDirection.BOTH):Void
+	public function makeDust(X:Float, Y:Float, Direction:DustDirection = DustDirection.BOTH):Void
 	{
 		_dust.x = X;
 		_dust.y = Y;

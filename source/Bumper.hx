@@ -10,6 +10,8 @@ import openfl.geom.Rectangle;
 
 class Bumper extends FlxSprite
 {
+	public var stationary:Bool = false;
+	
 	public function new(X:Float, Y:Float, Width:Int, Height:Int, Stationary:Bool = true)
 	{
 		super(X, Y);
@@ -19,6 +21,8 @@ class Bumper extends FlxSprite
 		
 		immovable = true;
 		elasticity = 1;
+		
+		stationary = Stationary;
 		
 		if (!Stationary)
 		{

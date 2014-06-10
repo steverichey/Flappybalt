@@ -2,14 +2,17 @@ package;
 
 import flash.Lib;
 import flixel.effects.particles.FlxEmitter;
+import flixel.effects.particles.FlxParticle;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
 import flixel.text.FlxText;
+import flixel.tweens.FlxTween;
 import flixel.ui.FlxButton;
 import flixel.math.FlxRandom;
+import flixel.util.FlxColor;
 import flixel.util.FlxSave;
 import flixel.util.FlxSpriteUtil;
 import flixel.input.keyboard.FlxKeyName;
@@ -26,11 +29,15 @@ class PlayState extends FlxState
 	private var _spikeTop:Spike;
 	private var _scoreDisplay:FlxText;
 	private var _highScore:FlxText;
+	private var _dust:FlxEmitter;
 	
 	private var bestCurrentScore:Int = 0;
 	private var bestHighScore:Int = 0;
 	
 	public var registeredButtons:Array<FlxKeyName>;
+	
+	inline static private var BUMPER_CHANCE:Float = 15;
+	inline static private var SPIKE_CHANCE:Float = 100;
 	
 	override public function create():Void
 	{
@@ -118,6 +125,25 @@ class PlayState extends FlxState
 		_birds = new FlxTypedGroup<Player>();
 		_birds.add(new Player("SPACE", true));
 		add(_birds);
+		
+		// Some dust
+		
+		_dust = new FlxEmitter();
+		
+		for (i in 0...50)
+		{
+			var mote:FlxParticle = new FlxParticle();
+			var size:Int = FlxRandom.int(1, 3);
+			mote.makeGraphic(size, size, FlxColor.WHITE);
+			mote.alpha = FlxRandom.float(0.1, 0.9);
+			_dust.add(mote);
+		}
+		
+		_dust.yVelocity.set( -5, 20);
+		_dust.gravity = 15;
+		_dust.life.set(0.5, 1);
+		_dust.endAlpha.set(0, 0);
+		add(_dust);
 	}
 	
 	override public function update():Void
@@ -177,24 +203,38 @@ class PlayState extends FlxState
 		
 		_scoreDisplay.text = Std.string( bestCurrentScore );
 		
-		if (Bird.x > FlxG.width / 2)
+		if (Bump.stationary)
 		{
-			_paddleRight.randomize();
-		}
-		else
-		{
-			_paddleLeft.randomize();
+			if (Bird.x < FlxG.width / 2)
+			{
+				_paddleRight.randomize();
+			}
+			else
+			{
+				_paddleLeft.randomize();
+			}
 		}
 		
 		#if !mobile
-		if (FlxRandom.chanceRoll(10))
+		if (FlxRandom.chanceRoll(BUMPER_CHANCE))
 		{
 			_bumpers.add(new Bumper(FlxRandom.int(20, FlxG.width - 20), FlxRandom.chanceRoll() ? 0 : FlxG.height, FlxRandom.int(4, 16), FlxRandom.int(4, 16), false));
 		}
 		
-		if (FlxRandom.chanceRoll(5))
+		if (FlxRandom.chanceRoll(SPIKE_CHANCE))
 		{
 			_spikes.add(new FloatingSpike());
+		}
+		
+		// Facing direction is flipped at this point. I think.
+		
+		if (Bird.facing == FlxObject.RIGHT)
+		{
+			makeDust(Bird.x + Bird.width, Bird.y + Bird.height / 2);
+		}
+		else
+		{
+			makeDust(Bird.x, Bird.y + Bird.height / 2);
 		}
 		#end
 	}
@@ -203,15 +243,41 @@ class PlayState extends FlxState
 	{
 		FlxG.sound.play("hurt");
 		Bird.bounce(true);
-		Bird.bounce(true);
+		AnotherBird.bounce(true);
 	}
 	
-	/**
-	 * Resets the state to its initial position without having to call FlxG.resetState().
-	 */
+	private function makeDust(X:Float, Y:Float, Direction:DustDirection = DustDirection.BOTH):Void
+	{
+		_dust.x = X;
+		_dust.y = Y;
+		
+		if (Direction == DustDirection.LEFT)
+		{
+			_dust.xVelocity.set( -20, 0);
+		}
+		else if (Direction == DustDirection.RIGHT)
+		{
+			_dust.xVelocity.set( 0, 20);
+		}
+		else
+		{
+			_dust.xVelocity.set( -20, 20);
+		}
+		
+		_dust.start(true, 0.5, 0, 5, 1);
+	}
+	
 	public function reset()
 	{
-		_paddleLeft.y = FlxG.height;
-		_paddleRight.y = FlxG.height;
+		_paddleLeft.remove();
+		_paddleRight.remove();
 	}
+}
+
+@:enum
+abstract DustDirection(Int)
+{
+	var LEFT = 0;
+	var RIGHT = 1;
+	var BOTH = 2;
 }

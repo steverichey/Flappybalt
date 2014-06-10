@@ -15,5 +15,12 @@ class FloatingSpike extends FlxSprite
 		loadGraphic("images/floatspike.png");
 		
 		FlxTween.tween(this, { y: FlxRandom.float(20, FlxG.height - 20 - height) }, FlxRandom.float(1, 3), { ease: FlxEase.cubeInOut } );
+		
+		angle = FlxRandom.float( -360, 360);
+		
+		if (FlxRandom.chanceRoll(50))
+		{
+			angularVelocity = FlxRandom.float(30, 180);
+		}
 	}
 }

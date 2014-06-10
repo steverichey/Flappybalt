@@ -4,7 +4,7 @@
 <img src="assets/screenshot.png" alt="Screenshot"/>
 </p>
 
-A cross-platform port of [AdamAtomic](https://github.com/AdamAtomic)'s [Flappybalt](http://adamatomic.com/flappybalt/), converted to [Haxe](http://www.haxe.org) and [HaxeFlixel](http://www.haxeflixel.com). You can play this on your Android by downloading it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.steverichey.flappybalt) if you'd like. You can also download a number of versions from [the releases page](https://github.com/steverichey/Flappybalt/releases).
+A cross-platform port of [AdamAtomic](https://github.com/AdamAtomic)'s [Flappybalt](http://adamatomic.com/flappybalt/), converted to [Haxe](http://www.haxe.org) and [HaxeFlixel](http://www.haxeflixel.com). You can play this on your mobile device by downloading it from the [Google Play Store](https://play.google.com/store/apps/details?id=com.steverichey.flappybalt) or [iTunes](https://itunes.apple.com/us/app/flappybalt-for-ios/id842888380?ls=1&mt=8) if you'd like. You can also download a number of versions from [the releases page](https://github.com/steverichey/Flappybalt/releases).
 
 # Releasing for Android with HaxeFlixel (Windows)
 

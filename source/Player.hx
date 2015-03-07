@@ -5,7 +5,7 @@ import flixel.effects.particles.FlxParticle;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.input.keyboard.FlxKeyName;
+import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRandom;
@@ -15,7 +15,7 @@ import flixel.util.FlxSpriteUtil;
 class Player extends FlxSprite
 {
 	public var score(default, null):Int = 0;
-	public var button:FlxKeyName;
+	public var button:FlxKey;
 	public var lonely(get, never):Bool;
 	
 	private var _only:Bool = false;
@@ -26,7 +26,7 @@ class Player extends FlxSprite
 	
 	inline static private var HOW_LONG_UNTIL_LONELY:Float = 5;
 	
-	public function new(Button:FlxKeyName, First:Bool = false)
+	public function new(Button:FlxKey, First:Bool = false)
 	{
 		super();
 		
@@ -49,28 +49,22 @@ class Player extends FlxSprite
 		
 		if (!First)
 		{
-			color = FlxColor.fromHSB(FlxRandom.int(0, 360), 1, 1);
-			x += FlxRandom.float( -20, 20);
-			y += FlxRandom.float( -20, 20);
+			color = FlxColor.fromHSB(FlxG.random.int(0, 360), 1, 1);
+			x += FlxG.random.float( -20, 20);
+			y += FlxG.random.float( -20, 20);
 		}
 		
 		_spawn = new FlxPoint(x, y);
 		
 		_feathers = new FlxEmitter();
-		_feathers.makeParticles( "images/feather.png", 10, 32 );
-		_feathers.startRed.set(color.redFloat);
-		_feathers.endRed.set(color.redFloat + 0.01);
-		_feathers.startGreen.set(color.greenFloat);
-		_feathers.endGreen.set(color.greenFloat + 0.01);
-		_feathers.startBlue.set(color.blueFloat);
-		_feathers.endBlue.set(color.blueFloat + 0.01);
-		_feathers.setXSpeed( -10, 10 );
-		_feathers.setYSpeed( -10, 10 );
-		_feathers.gravity = 10;
+		_feathers.loadParticles("images/feather.png", 10, 32);
+		_feathers.color.set(color);
+		_feathers.speed.set(-10, 10);
+		_feathers.acceleration.set(10, 0);
 		Reg.PS.add( _feathers );
 	}
 	
-	override public function update():Void
+	override public function update(_):Void
 	{
 		if (justFlapped())
 		{
@@ -102,7 +96,7 @@ class Player extends FlxSprite
 			facing = FlxObject.RIGHT;
 		}
 		
-		super.update();
+		super.update(_);
 	}
 	
 	private function get_lonely():Bool
@@ -162,7 +156,7 @@ class Player extends FlxSprite
 	{
 		_feathers.x = x;
 		_feathers.y = y;
-		_feathers.start(true, 2, 0, Amount);
+		_feathers.start(true, 2, Amount);
 	}
 	
 	public function onFlashDone():Void

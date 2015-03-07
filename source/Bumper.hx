@@ -26,7 +26,7 @@ class Bumper extends FlxSprite
 		
 		if (!Stationary)
 		{
-			FlxTween.tween(this, { y: FlxRandom.int(20, Std.int(FlxG.height - 20 - height)) }, FlxRandom.float(0, 10), {ease: FlxEase.elasticOut} );
+			FlxTween.tween(this, { y: FlxG.random.int(20, Std.int(FlxG.height - 20 - height)) }, FlxG.random.float(0, 10), {ease: FlxEase.elasticOut} );
 		}
 	}
 	
@@ -48,56 +48,56 @@ class Bumper extends FlxSprite
 	{
 		// Background for the dull frame
 		
-		_bitmapData = new BitmapData( Width * 2, Height, false, Reg.GREY_MED );
+		bitmapData = new BitmapData( Width * 2, Height, false, Reg.GREY_MED );
 		
 		// Background for the light frame
 		
-		_rect = new Rectangle( Width, 0, Width, Height );
-		_bitmapData.fillRect( _rect, Reg.GREY_LIGHT );
+		rect = new Rectangle( Width, 0, Width, Height );
+		bitmapData.fillRect( rect, Reg.GREY_LIGHT );
 		
 		// Left line for dull frame
 		
-		_rect = new Rectangle( 0, 1, 1, Height - 2 );
-		_bitmapData.fillRect( _rect, Reg.GREY_DARK );
+		rect = new Rectangle( 0, 1, 1, Height - 2 );
+		bitmapData.fillRect( rect, Reg.GREY_DARK );
 		
 		// Right line for dull frame
 		
-		_rect.x = Width - 1;
-		_bitmapData.fillRect( _rect, Reg.GREY_DARK );
+		rect.x = Width - 1;
+		bitmapData.fillRect( rect, Reg.GREY_DARK );
 		
 		// Top line for dull frame
 		
-		_rect = new Rectangle( 1, 0, Width - 2, 1 );
-		_bitmapData.fillRect( _rect, Reg.GREY_DARK );
+		rect = new Rectangle( 1, 0, Width - 2, 1 );
+		bitmapData.fillRect( rect, Reg.GREY_DARK );
 		
 		// Bottom line for dull frame
 		
-		_rect.y = Height - 1;
-		_bitmapData.fillRect( _rect, Reg.GREY_DARK );
+		rect.y = Height - 1;
+		bitmapData.fillRect( rect, Reg.GREY_DARK );
 		
 		// Left line for light frame
 		
-		_rect = new Rectangle(Width * 2, 1, 1, Height - 2 );
-		_bitmapData.fillRect( _rect, Reg.WHITE );
+		rect = new Rectangle(Width * 2, 1, 1, Height - 2 );
+		bitmapData.fillRect( rect, Reg.WHITE );
 		
 		// Right line for light frame
 		
-		_rect.x = Width * 2 - 1;
-		_bitmapData.fillRect( _rect, Reg.WHITE );
+		rect.x = Width * 2 - 1;
+		bitmapData.fillRect( rect, Reg.WHITE );
 		
 		// Top line for light frame
 		
-		_rect = new Rectangle( Width + 1, 0, Width - 2, 1 );
-		_bitmapData.fillRect( _rect, Reg.WHITE );
+		rect = new Rectangle( Width + 1, 0, Width - 2, 1 );
+		bitmapData.fillRect( rect, Reg.WHITE );
 		
 		// Bottom line for light frame
 		
-		_rect.y = Height - 1;
-		_bitmapData.fillRect( _rect, Reg.WHITE );
+		rect.y = Height - 1;
+		bitmapData.fillRect( rect, Reg.WHITE );
 		
-		return _bitmapData;
+		return bitmapData;
 	}
 	
-	static private var _bitmapData:BitmapData;
-	static private var _rect:Rectangle;
+	static private var bitmapData:BitmapData;
+	static private var rect:Rectangle;
 }

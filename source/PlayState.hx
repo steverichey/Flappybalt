@@ -15,7 +15,7 @@ import flixel.math.FlxRandom;
 import flixel.util.FlxColor;
 import flixel.util.FlxSave;
 import flixel.util.FlxSpriteUtil;
-import flixel.input.keyboard.FlxKeyName;
+import flixel.input.keyboard.FlxKey;
 
 class PlayState extends FlxState
 {
@@ -34,7 +34,7 @@ class PlayState extends FlxState
 	private var bestCurrentScore:Int = 0;
 	private var bestHighScore:Int = 0;
 	
-	public var registeredButtons:Array<FlxKeyName>;
+	public var registeredButtons:Array<FlxKey>;
 	
 	inline static private var BUMPER_CHANCE:Float = 15;
 	inline static private var SPIKE_CHANCE:Float = 5;
@@ -127,16 +127,16 @@ class PlayState extends FlxState
 		for (i in 0...500)
 		{
 			var mote:FlxParticle = new FlxParticle();
-			var size:Int = FlxRandom.int(1, 3);
+			var size:Int = FlxG.random.int(1, 3);
 			mote.makeGraphic(size, size, FlxColor.WHITE);
-			mote.alpha = FlxRandom.float(0.1, 0.9);
+			mote.alpha = FlxG.random.float(0.1, 0.9);
 			_dust.add(mote);
 		}
 		
-		_dust.yVelocity.set( -5, 20);
-		_dust.gravity = 15;
-		_dust.life.set(0.5, 1);
-		_dust.endAlpha.set(0, 0);
+		_dust.velocity.set(0, -5, 0, 20);
+		_dust.acceleration.set(0, 15);
+		_dust.lifespan.set(0.5, 1);
+		_dust.alpha.end.set(0);
 		add(_dust);
 		
 		// The birds.
@@ -152,7 +152,7 @@ class PlayState extends FlxState
 		//add(title);
 	}
 	
-	override public function update():Void
+	override public function update(_):Void
 	{
 		for (bird in _birds)
 		{
@@ -183,7 +183,7 @@ class PlayState extends FlxState
 		FlxG.collide(_birds, _bumpers, birdBounce);
 		FlxG.collide(_birds, _birds, birdOnBirdViolence);
 		
-		super.update();
+		super.update(_);
 	}
 	
 	private function birdBounce(Bird:Player, Bump:Bumper):Void
@@ -222,12 +222,12 @@ class PlayState extends FlxState
 		}
 		
 		#if !mobile
-		if (FlxRandom.chanceRoll(BUMPER_CHANCE))
+		if (FlxG.random.bool(BUMPER_CHANCE))
 		{
-			_bumpers.add(new Bumper(FlxRandom.int(20, FlxG.width - 20), FlxRandom.chanceRoll() ? 0 : FlxG.height, FlxRandom.int(4, 16), FlxRandom.int(4, 16), false));
+			_bumpers.add(new Bumper(FlxG.random.int(20, FlxG.width - 20), FlxG.random.bool() ? 0 : FlxG.height, FlxG.random.int(4, 16), FlxG.random.int(4, 16), false));
 		}
 		
-		if (FlxRandom.chanceRoll(SPIKE_CHANCE))
+		if (FlxG.random.bool(SPIKE_CHANCE))
 		{
 			_spikes.add(new FloatingSpike());
 		}
@@ -259,18 +259,18 @@ class PlayState extends FlxState
 		
 		if (Direction == DustDirection.LEFT)
 		{
-			_dust.xVelocity.set( -20, 0);
+			_dust.velocity.set(-20, 0, 0);
 		}
 		else if (Direction == DustDirection.RIGHT)
 		{
-			_dust.xVelocity.set( 0, 20);
+			_dust.velocity.set(0, 0, 20);
 		}
 		else
 		{
-			_dust.xVelocity.set( -20, 20);
+			_dust.velocity.set(-20, 0, 20);
 		}
 		
-		_dust.start(true, 0.5, 0, 5, 1);
+		_dust.start(true, 0.5, 5);
 	}
 	
 	public function reset()

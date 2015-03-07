@@ -69,33 +69,33 @@ class City extends FlxSprite
 		{
 			vertices.push(new FlxPoint(xPos, yPos));
 			
-			current = FlxRandom.int(0, 4, [last]);
+			current = FlxG.random.int(0, 4, [last]);
 			
 			switch (current)
 			{
 				case 0:
-					xPos += FlxRandom.int(10, 30);
+					xPos += FlxG.random.int(10, 30);
 				case 1:
 					if (last != 2) // prevent going straight down then up
 					{
-						yPos -= FlxRandom.int(5, 20);
+						yPos -= FlxG.random.int(5, 20);
 						yPos = Std.int(FlxMath.bound(yPos, MinY, MaxY));
 					}
 				case 2:
 					if (last != 1) // prevent going straight up then down
 					{
-						yPos += FlxRandom.int(10, 40);
+						yPos += FlxG.random.int(10, 40);
 					}
 				case 3:
-					yPos -= FlxRandom.int(10, 20);
+					yPos -= FlxG.random.int(10, 20);
 					vertices.push(new FlxPoint(xPos, yPos));
-					xPos -= FlxRandom.int(2, 5);
+					xPos -= FlxG.random.int(2, 5);
 					vertices.push(new FlxPoint(xPos, yPos));
-					yPos -= FlxRandom.int(3, 6);
+					yPos -= FlxG.random.int(3, 6);
 					vertices.push(new FlxPoint(xPos, yPos));
-					xPos += FlxRandom.int(9, 30);
+					xPos += FlxG.random.int(9, 30);
 				case 4:
-					move = FlxRandom.int(10, 20);
+					move = FlxG.random.int(10, 20);
 					xPos += move;
 					yPos += move;
 			}

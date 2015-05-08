@@ -4,6 +4,10 @@
 	
 	<app title="Flappybalt" file="Flappybalt" main="Main" version="1.2" company="STVR" package="com.steverichey.flappybalt" />
     <meta package="com.steverichey.flappybalt"/>
+
+    <!-- Enable/disable original "portrait" mode -->
+    <set name="portrait" />
+    <haxedef name="portrait" if="portrait" />
 	
 	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file, or you can set the actual size of your file manually at "Flxpreloader-onUpdate-bytesTotal"!-->
 	<app preloader="flixel.system.FlxPreloader" />
@@ -14,7 +18,10 @@
 	<!--------------------------------WINDOW SETTINGS------------------------------->
 	
 	<!--These window settings apply to all targets-->
-	<window width="1200" height="600" fps="60" background="#000000" hardware="true" vsync="true" />
+	<window fps="60" background="#000000" hardware="true" vsync="true" />
+
+	<window width="1200" height="600" unless="portrait"/>
+	<window width="480" height="720" if="portrait" />
 	
 	<!--Web-specific-->
 	<window if="web"		orientation="portrait"  />

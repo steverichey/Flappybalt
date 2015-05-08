@@ -33,6 +33,10 @@ class Main extends Sprite
 			removeEventListener(Event.ADDED_TO_STAGE, init);
 		}
 		
+		#if portrait
+		addChild(new FlxGame(160, 240, PlayState));
+		#else
 		addChild(new FlxGame(600, 300, PlayState));
+		#end
 	}
 }

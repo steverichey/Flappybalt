@@ -57,9 +57,15 @@ class PlayState extends FlxState
 		FlxG.mouse.visible = false;
 		#end
 		
+		#if portrait
+		var city:FlxSprite = new FlxSprite(0, 0, "images/bg.png");
+		FlxSpriteUtil.screenCenter(city);
+		add(city);
+		#else
 		var city:City = new City();
 		add(city);
-		
+		#end
+
 		// Current score.
 		
 		_scoreDisplay = new FlxText( 0, FlxG.height - 64, FlxG.width );
@@ -73,7 +79,7 @@ class PlayState extends FlxState
 		_highScore = new FlxText( 0, 40, FlxG.width, "" );
 		_highScore.alignment = "center";
 		_highScore.color = 0xff868696;
-		//add( _highScore );
+		add( _highScore );
 		
 		bestHighScore = Save.loadScore();
 		
@@ -90,7 +96,7 @@ class PlayState extends FlxState
 		_bumpers.add(new Bumper(FlxG.width - 5, 17, 4, FlxG.height - 34));
 		
 		add(_bumpers);
-		
+
 		// Floating spike objects
 		
 		_spikes = new FlxTypedGroup<FloatingSpike>();
@@ -133,7 +139,7 @@ class PlayState extends FlxState
 			_dust.add(mote);
 		}
 		
-		_dust.velocity.set(0, -5, 0, 20);
+		_dust.velocity.set(-5, 0, 5, 0);
 		_dust.acceleration.set(0, 15);
 		_dust.lifespan.set(0.5, 1);
 		_dust.alpha.end.set(0);
@@ -165,15 +171,17 @@ class PlayState extends FlxState
 				bird.kill();
 			}
 			
+			#if !portrait
 			if (bird.lonely && _birds.length > 1)
 			{
 				_birds.remove(bird, true);
 				bird.destroy();
 				bird = null;
 			}
+			#end
 		}
 		
-		#if !FLX_NO_KEYBOARD
+		#if (!FLX_NO_KEYBOARD && !portrait)
 		if (FlxG.keys.justPressed.ANY && !FlxG.keys.anyJustPressed(registeredButtons))
 		{
 			_birds.add(new Player(FlxG.keys.firstPressed(), false));
@@ -195,7 +203,7 @@ class PlayState extends FlxState
 		{
 			bestCurrentScore = Bird.score;
 			
-			#if !mobile
+			#if !portrait
 			_scoreDisplay.color = Bird.color;
 			
 			if (bestCurrentScore > bestHighScore)
@@ -221,7 +229,7 @@ class PlayState extends FlxState
 			}
 		}
 		
-		#if !mobile
+		#if !portrait
 		if (FlxG.random.bool(BUMPER_CHANCE))
 		{
 			_bumpers.add(new Bumper(FlxG.random.int(20, FlxG.width - 20), FlxG.random.bool() ? 0 : FlxG.height, FlxG.random.int(4, 16), FlxG.random.int(4, 16), false));
@@ -259,15 +267,15 @@ class PlayState extends FlxState
 		
 		if (Direction == DustDirection.LEFT)
 		{
-			_dust.velocity.set(-20, 0, 0);
+			_dust.velocity.set(-10, 0, -1, 0);
 		}
 		else if (Direction == DustDirection.RIGHT)
 		{
-			_dust.velocity.set(0, 0, 20);
+			_dust.velocity.set(1, 0, 10, 0);
 		}
 		else
 		{
-			_dust.velocity.set(-20, 0, 20);
+			_dust.velocity.set(-10, 0, 10, 0);
 		}
 		
 		_dust.start(true, 0.5, 5);
